@@ -1,0 +1,71 @@
+{
+  "_args": [
+    [
+      "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+      "C:\\projects\\montra.io\\vsts\\montra-via-api"
+    ]
+  ],
+  "_from": "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+  "_id": "odata-v4-parser@github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+  "_inBundle": false,
+  "_integrity": "",
+  "_location": "/odata-v4-parser",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "git",
+    "raw": "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+    "rawSpec": "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+    "saveSpec": "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+    "fetchSpec": null,
+    "gitCommittish": "c5c68ba11db28153a664e685d1d1e7ddb11b2c37"
+  },
+  "_requiredBy": [
+    "/@jwstott/odata-v4-pg"
+  ],
+  "_resolved": "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+  "_spec": "github:SwedishAstronauts/odata-v4-parser#c5c68ba11db28153a664e685d1d1e7ddb11b2c37",
+  "_where": "C:\\projects\\montra.io\\vsts\\montra-via-api",
+  "author": {
+    "name": "JayStack"
+  },
+  "bugs": {
+    "url": "https://github.com/jaystack/odata-v4-parser/issues"
+  },
+  "description": "OData v4 Parser",
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "concurrently": "^3.5.1",
+    "istanbul": "^0.4.5",
+    "mocha": "^5.2.0",
+    "mochawesome": "^3.0.2",
+    "remap-istanbul": "^0.11.1",
+    "rimraf": "^2.6.2",
+    "tslint": "^5.10.0",
+    "typedoc": "^0.11.1",
+    "typedoc-default-themes": "^0.5.0",
+    "typedoc-plugin-external-module-name": "^1.1.1",
+    "typescript": "^3.3.3"
+  },
+  "homepage": "https://github.com/jaystack/odata-v4-parser#readme",
+  "license": "MIT",
+  "main": "lib/parser.js",
+  "name": "odata-v4-parser",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/jaystack/odata-v4-parser.git"
+  },
+  "scripts": {
+    "build": "tsc",
+    "build:w": "tsc -w",
+    "coverage": "rimraf coverage && tsc && node node_modules/istanbul/lib/cli.js cover node_modules/mocha/bin/_mocha test/**/*.spec.js --config=.istanbul.yaml -x config/**/*.js && node node_modules/remap-istanbul/bin/remap-istanbul -i coverage/coverage.json -o coverage/html-report -t html",
+    "lint": "tslint src/**/*.ts --fix",
+    "prebuild": "npm run lint",
+    "prepublish": "npm run test",
+    "pretest": "npm run build",
+    "tdd": "concurrently \"tsc -w\" \"mocha -w\"",
+    "test": "rimraf report && mocha test/**/*.spec.js --reporter mochawesome --reporter-options reportDir=report,reportFilename=index,reportTitle=\"JayStack OData V4 Parser\"",
+    "typedoc": "typedoc --name \"JayStack OData v4 Parser\" --excludeExternals --excludeNotExported --hideGenerator --excludeExternals --excludePrivate --out docs src"
+  },
+  "typings": "lib/parser.d.ts",
+  "version": "0.1.29"
+}

@@ -1,0 +1,10 @@
+{
+  "compilerOptions": {
+    "outDir": "lib",
+    "module": "commonjs",
+    "target": "es2017",
+    "declaration": true,
+    "sourceMap": true
+  },
+  "exclude": ["lib", "node_modules"]
+}
