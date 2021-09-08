@@ -177,9 +177,9 @@ export declare const LexerToken: typeof Token;
 export declare type LexerToken = Token;
 export declare namespace Lexer {
     type Token = LexerToken;
-    const Token: typeof LexerToken;
+    const Token: typeof import("./lexer").Token;
     type TokenType = LexerTokenType;
-    const TokenType: typeof LexerTokenType;
+    const TokenType: typeof import("./lexer").TokenType;
     function tokenize(value: Utils.SourceArray, index: number, next: number, tokenValue: any, tokenType: TokenType, metadataContextContainer?: Token): Token;
     function clone(token: any): Token;
     function ALPHA(value: number): boolean;

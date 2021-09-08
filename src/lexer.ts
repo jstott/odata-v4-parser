@@ -189,12 +189,12 @@ export type LexerToken = Token;
 
 export namespace Lexer {
     export type Token = LexerToken;
-    export const Token: typeof LexerToken = exports.Token;
+    export const Token = LexerToken;
     export type TokenType = LexerTokenType;
-    export const TokenType: typeof LexerTokenType = exports.TokenType;
+    export const TokenType = LexerTokenType;
 
     export function tokenize(value: Utils.SourceArray, index: number, next: number, tokenValue: any, tokenType: TokenType, metadataContextContainer?: Token): Token {
-        let token = new exports.Token({
+        let token = new Token({
             position: index,
             next: next,
             value: tokenValue,
@@ -209,7 +209,7 @@ export namespace Lexer {
     }
 
     export function clone(token): Token {
-        return new exports.Token({
+        return new Token({
             position: token.position,
             next: token.next,
             value: token.value,
