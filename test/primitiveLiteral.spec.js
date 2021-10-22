@@ -12,7 +12,7 @@ describe('Primitive literals from json', () => {
     }
     if (item[resultName] !== undefined) {
       it(title, () => {
-        let source = new Uint8Array(new Buffer(item.Input));
+        let source = new Uint8Array(new Buffer.from(item.Input));
         if (item[resultName].next === undefined) item[resultName].next = item.Input.length;
         if (item[resultName].raw === undefined) item[resultName].raw = item.Input;
 

@@ -964,6 +964,11 @@
     "Input": "(4 add 5) mod (4 sub 1) eq 0"
   },
   {
+    "-Name": "5.1.1.4.1 containsAny",
+    "-Rule": "boolCommonExpr",
+    "Input": "containsAny(CompanyName,'lfreds')"
+  },
+  {
     "-Name": "5.1.1.4.1 contains",
     "-Rule": "boolCommonExpr",
     "Input": "contains(CompanyName,'lfreds')"

@@ -201,6 +201,7 @@ export namespace Expressions {
         return endsWithMethodCallExpr(value, index) ||
             startsWithMethodCallExpr(value, index) ||
             containsMethodCallExpr(value, index) ||
+            containsAnyMethodCallExpr(value, index) ||
             intersectsMethodCallExpr(value, index);
     }
     export function methodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token {
@@ -272,6 +273,7 @@ export namespace Expressions {
         }, Lexer.TokenType.MethodCallExpression);
     }
     export function containsMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token { return methodCallExprFactory(value, index, "contains", 2); }
+    export function containsAnyMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token { return methodCallExprFactory(value, index, "containsAny", 2); }
     export function startsWithMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token { return methodCallExprFactory(value, index, "startswith", 2); }
     export function endsWithMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token { return methodCallExprFactory(value, index, "endswith", 2); }
     export function lengthMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token { return methodCallExprFactory(value, index, "length", 1); }

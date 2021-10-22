@@ -26,6 +26,7 @@ export declare namespace Expressions {
     function methodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function methodCallExprFactory(value: Utils.SourceArray, index: number, method: string, min?: number, max?: number): Lexer.Token;
     function containsMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function containsAnyMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function startsWithMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function endsWithMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function lengthMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
