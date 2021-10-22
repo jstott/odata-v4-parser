@@ -44,5 +44,5 @@
     "typedoc": "typedoc --name \"JayStack OData v4 Parser\" --excludeExternals --excludeNotExported --hideGenerator --excludeExternals --excludePrivate --out docs src"
   },
   "typings": "lib/parser.d.ts",
-  "version": "0.1.30"
+  "version": "0.1.31"
 }
