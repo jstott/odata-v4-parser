@@ -1,6 +1,7 @@
 export declare namespace Utils {
     type SourceArray = number[] | Uint16Array;
     function stringify(value: SourceArray, index: number, next: number): string;
+    function has(value: SourceArray, index: number, next: number, compare: string): boolean;
     function matches(value: SourceArray, index: number, next: number, regex: RegExp): string;
     function is(value: number, compare: string): boolean;
     function equals(value: SourceArray, index: number, compare: string): number;

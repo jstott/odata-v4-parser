@@ -99,9 +99,12 @@ export namespace Expressions {
 
     export function jsonPathExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         let token = null;
-        let re = /^([\w'#{}\->\[\]]{5,})[\s,]+/;
-        if (!value.includes(0x3e)) return; // if values does not include a > - abort
         let start = index;
+        let re = /^([\w'#{}\->\[\]]{5,})[\s,]+/;
+        if (!Utils.has(value, start, value.length, ">")) {
+            return; // if values does not include a > - abort
+        }
+
         let match = Utils.matches(value, start, value.length, re);
         if (match) {
             let watch = Utils.stringify(value, start, start + match.length);

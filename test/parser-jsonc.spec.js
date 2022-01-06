@@ -32,6 +32,11 @@ describe("Parser", () => {
     var ast = parser.query("$filter=shipto->0-->'fred' ne 'csonl'"); // / works!
    //console.log(ast);
   });  
+  it("should parse json syntax-5", () => {
+    var parser = new Parser();
+    var ast = parser.query("$filter=meta->'order'->'shipTo'->>'name ne 'KariDriver'"); // / works!
+   //console.log(ast);
+  });  
 
    it("table-column_snake", () => {
     var parser = new Parser();
