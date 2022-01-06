@@ -49,6 +49,7 @@ export declare enum TokenType {
     PrimitiveFunctionImport = "PrimitiveFunctionImport",
     PrimitiveCollectionFunctionImport = "PrimitiveCollectionFunctionImport",
     CommonExpression = "CommonExpression",
+    JsonPathExpression = "JsonPathExpression",
     AndExpression = "AndExpression",
     OrExpression = "OrExpression",
     EqualsExpression = "EqualsExpression",
@@ -67,6 +68,7 @@ export declare enum TokenType {
     NotExpression = "NotExpression",
     BoolParenExpression = "BoolParenExpression",
     ParenExpression = "ParenExpression",
+    MethodCallJsonExpression = "MethodCallJsonExpression",
     MethodCallExpression = "MethodCallExpression",
     IsOfExpression = "IsOfExpression",
     CastExpression = "CastExpression",
@@ -190,7 +192,7 @@ export declare namespace Lexer {
     function SP(value: number): boolean;
     function HTAB(value: number): boolean;
     function VCHAR(value: number): boolean;
-    function whitespaceLength(value: any, index: any): 3 | 1;
+    function whitespaceLength(value: any, index: any): 1 | 3;
     function OWS(value: Utils.SourceArray, index: number): number;
     function RWS(value: Utils.SourceArray, index: number): number;
     function BWS(value: Utils.SourceArray, index: number): number;

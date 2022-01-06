@@ -153,8 +153,11 @@ export namespace NameOrIdentifier {
                 index++;
             }
         }
-
-        if (index > start) return Lexer.tokenize(value, start, index, { name: Utils.stringify(value, start, index) }, tokenType || Lexer.TokenType.ODataIdentifier);
+        let deb = Utils.stringify(value, start, index);
+        // console.log(deb);
+        if (index > start) {
+            return Lexer.tokenize(value, start, index, { name: Utils.stringify(value, start, index) }, tokenType || Lexer.TokenType.ODataIdentifier);
+        }
     }
     export function namespacePart(value: Utils.SourceArray, index: number): Lexer.Token { return NameOrIdentifier.odataIdentifier(value, index, Lexer.TokenType.NamespacePart); }
     export function entitySetName(value: Utils.SourceArray, index: number, metadataContext?: any): Lexer.Token {
@@ -247,7 +250,7 @@ export namespace NameOrIdentifier {
             Utils.equals(value, index, "GeometryMultiPolygon") ||
             Utils.equals(value, index, "GeometryPoint") ||
             Utils.equals(value, index, "GeometryPolygon")
-            );
+        );
 
         if (end > index) return Lexer.tokenize(value, start, end, "PrimitiveTypeName", Lexer.TokenType.Identifier);
     }

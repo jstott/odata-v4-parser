@@ -3,6 +3,7 @@ import Lexer from "./lexer";
 export declare namespace Expressions {
     function commonExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function boolCommonExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function jsonPathExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function andExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function orExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function leftRightExpr(value: Utils.SourceArray, index: number, expr: string, tokenType: Lexer.TokenType): Lexer.Token;
@@ -24,6 +25,7 @@ export declare namespace Expressions {
     function parenExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function boolMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function methodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function methodCallJsonBFactory(value: Utils.SourceArray, index: number, method: string, min?: number, max?: number): Lexer.Token;
     function methodCallExprFactory(value: Utils.SourceArray, index: number, method: string, min?: number, max?: number): Lexer.Token;
     function containsMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function containsAnyMethodCallExpr(value: Utils.SourceArray, index: number): Lexer.Token;
@@ -88,6 +90,8 @@ export declare namespace Expressions {
     function parameterAlias(value: Utils.SourceArray, index: number): Lexer.Token;
     function parameterValue(value: Utils.SourceArray, index: number): Lexer.Token;
     function countExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function jsonObjectExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function jsonValueExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function refExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function valueExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function rootExpr(value: Utils.SourceArray, index: number): Lexer.Token;

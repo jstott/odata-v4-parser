@@ -14,6 +14,30 @@ describe("Parser", () => {
 
   it("should parse query string", () => {
     var parser = new Parser();
+    //var ast = parser.query("$filter=contains(Location/Address, 'San Francisco')");
+    var ast = parser.query("$filter=contains(Location/Address, 'San Francisco')");
+    expect(ast.value.options[0].type).to.equal("Filter");
+  });
+
+  it("should parse query Lambda Operators", () => {
+    var parser = new Parser();
+    //var ast = parser.query("$filter=contains(Location/Address, 'San Francisco')");
+    // The request below returns People with Emails containing "ll@contoso.com". The Emails is a collection of primitive type string.
+    var ast = parser.query("$filter=Emails/any(s:endswith(s, 'contoso.com'))");
+    expect(ast.value.options[0].type).to.equal("Filter");
+  });
+
+  it("should parse query Lambda Operators2", () => {
+    var parser = new Parser();
+    //var ast = parser.query("$filter=contains(Location/Address, 'San Francisco')");
+    // The request below returns the friends of Me who have friends using "Scott" as their FirstName.
+    var ast = parser.query("$filter=Friends/any(f:f/FirstName eq 'Scott')");
+    expect(ast.value.options[0].type).to.equal("Filter");
+  });
+
+
+  it("should parse query string", () => {
+    var parser = new Parser();
     var ast = parser.query("$filter=Title eq 'alma'");
     expect(ast.value.options[0].type).to.equal("Filter");
   });
@@ -33,6 +57,7 @@ describe("Parser", () => {
     expect(ast.value.options[1].value.key).to.equal("bar");
     expect(ast.value.options[1].value.value).to.equal("foobar");
   });
+  
 
   it("should throw error parsing invalid custom query options", () => {
     var parser = new Parser();

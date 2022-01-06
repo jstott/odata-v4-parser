@@ -4,6 +4,14 @@ export namespace Utils {
     export function stringify(value: SourceArray, index: number, next: number): string {
         return Array.prototype.map.call(value.slice(index, next), function (ch) { return String.fromCharCode(ch); }).join("");
     }
+    export function matches(value: SourceArray, index: number, next: number, regex: RegExp): string {
+        let str = Utils.stringify(value, index, next);
+        if (str) {
+            let matches = str.match(regex);
+            if (matches && matches.length > 0) return matches[1];
+        }
+        return null;
+    }
 
     export function is(value: number, compare: string) {
         for (let i = 0; i < compare.length; i++) {

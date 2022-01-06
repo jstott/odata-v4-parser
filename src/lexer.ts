@@ -50,6 +50,7 @@ export enum TokenType {
     PrimitiveFunctionImport = "PrimitiveFunctionImport",
     PrimitiveCollectionFunctionImport = "PrimitiveCollectionFunctionImport",
     CommonExpression = "CommonExpression",
+    JsonPathExpression = "JsonPathExpression",
     AndExpression = "AndExpression",
     OrExpression = "OrExpression",
     EqualsExpression = "EqualsExpression",
@@ -68,6 +69,7 @@ export enum TokenType {
     NotExpression = "NotExpression",
     BoolParenExpression = "BoolParenExpression",
     ParenExpression = "ParenExpression",
+    MethodCallJsonExpression = "MethodCallJsonExpression",
     MethodCallExpression = "MethodCallExpression",
     IsOfExpression = "IsOfExpression",
     CastExpression = "CastExpression",
@@ -218,8 +220,11 @@ export namespace Lexer {
         });
     }
 
-    // core definitions
-    export function ALPHA(value: number): boolean { return (value >= 0x41 && value <= 0x5a) || (value >= 0x61 && value <= 0x7a) || value >= 0x80; }
+    /* ------------------------------------------------------------------------------
+               core definitions
+    -------------------------------------------------------------------------------- */
+    // A-Z,a-z, >= 80
+    export function ALPHA(value: number): boolean { return (value >= 0x41 && value <= 0x5a) || (value >= 0x61 && value <= 0x7a) || value >= 0x80;  } // || value === 0x3e || value === 0x2d;
     export function DIGIT(value: number): boolean { return (value >= 0x30 && value <= 0x39); }
     export function HEXDIG(value: number): boolean { return Lexer.DIGIT(value) || Lexer.AtoF(value); }
     export function AtoF(value: number): boolean { return (value >= 0x41 && value <= 0x46) || (value >= 0x61 && value <= 0x66); }
@@ -228,12 +233,15 @@ export namespace Lexer {
     export function HTAB(value: number): boolean { return value === 0x09; }
     export function VCHAR(value: number): boolean { return value >= 0x21 && value <= 0x7e; }
 
-    // punctuation
+    /* ------------------------------------------------------------------------------
+               Punctuation
+    -------------------------------------------------------------------------------- */
     export function whitespaceLength(value, index) {
         if (Utils.equals(value, index, "%20") || Utils.equals(value, index, "%09")) return 3;
         else if (Lexer.SP(value[index]) || Lexer.HTAB(value[index]) || value[index] === 0x20 || value[index] === 0x09) return 1;
     }
 
+    // OWS - Optional Whitespace
     export function OWS(value: Utils.SourceArray, index: number): number {
         index = index || 0;
         let inc = Lexer.whitespaceLength(value, index);
@@ -243,9 +251,11 @@ export namespace Lexer {
         }
         return index;
     }
+    // RWS - Required Whitespace
     export function RWS(value: Utils.SourceArray, index: number): number {
         return Lexer.OWS(value, index);
     }
+    // BWS - Bad Whitespace - same as OWS (optional whitespace)
     export function BWS(value: Utils.SourceArray, index: number): number {
         return Lexer.OWS(value, index);
     }
@@ -289,28 +299,34 @@ export namespace Lexer {
         if (value[index] === 0x29) return index + 1;
         else if (Utils.equals(value, index, "%29")) return index + 3;
     }
+
     // unreserved ALPHA / DIGIT / "-" / "." / "_" / "~"
     export function unreserved(value: number): boolean { return Lexer.ALPHA(value) || Lexer.DIGIT(value) || value === 0x2d || value === 0x2e || value === 0x5f || value === 0x7e; }
+
     // other-delims "!" /                   "(" / ")" / "*" / "+" / "," / ";"
     export function otherDelims(value: Utils.SourceArray, index: number): number {
         if (value[index] === 0x21 || value[index] === 0x2b) return index + 1;
         else return Lexer.OPEN(value, index) || Lexer.CLOSE(value, index) || Lexer.STAR(value, index) || Lexer.COMMA(value, index) || Lexer.SEMI(value, index);
     }
+
     // sub-delims     =       "$" / "&" / "'" /                                     "=" / other-delims
     export function subDelims(value: Utils.SourceArray, index: number): number {
         if (value[index] === 0x24 || value[index] === 0x26) return index + 1;
         else return Lexer.SQUOTE(value, index) || Lexer.EQ(value, index) || Lexer.otherDelims(value, index);
     }
+
     export function pctEncoded(value: Utils.SourceArray, index: number): number {
         if (value[index] !== 0x25 || !Lexer.HEXDIG(value[index + 1]) || !Lexer.HEXDIG(value[index + 2])) return index;
         return index + 3;
     }
+
     // pct-encoded-no-SQUOTE = "%" ( "0" / "1" /   "3" / "4" / "5" / "6" / "8" / "9" / A-to-F ) HEXDIG
     //                       / "%" "2" ( "0" / "1" / "2" / "3" / "4" / "5" / "6" /   "8" / "9" / A-to-F )
     export function pctEncodedNoSQUOTE(value: Utils.SourceArray, index: number): number {
         if (Utils.equals(value, index, "%27")) return index;
         return Lexer.pctEncoded(value, index);
     }
+
     export function pctEncodedUnescaped(value: Utils.SourceArray, index: number): number {
         if (Utils.equals(value, index, "%22") ||
             Utils.equals(value, index, "%3") ||
@@ -318,18 +334,22 @@ export namespace Lexer {
             Utils.equals(value, index, "%5C")) return index;
         return Lexer.pctEncoded(value, index);
     }
+
     export function pchar(value: Utils.SourceArray, index: number): number {
         if (Lexer.unreserved(value[index])) return index + 1;
         else return Lexer.subDelims(value, index) || Lexer.COLON(value, index) || Lexer.AT(value, index) || Lexer.pctEncoded(value, index) || index;
     }
+
     export function pcharNoSQUOTE(value: Utils.SourceArray, index: number): number {
         if (Lexer.unreserved(value[index]) || value[index] === 0x24 || value[index] === 0x26) return index + 1;
         else return Lexer.otherDelims(value, index) || Lexer.EQ(value, index) || Lexer.COLON(value, index) || Lexer.AT(value, index) || Lexer.pctEncodedNoSQUOTE(value, index) || index;
     }
+
     export function qcharNoAMP(value: Utils.SourceArray, index: number): number {
         if (Lexer.unreserved(value[index]) || value[index] === 0x3a || value[index] === 0x40 || value[index] === 0x2f || value[index] === 0x3f || value[index] === 0x24 || value[index] === 0x27 || value[index] === 0x3d) return index + 1;
         else return Lexer.pctEncoded(value, index) || Lexer.otherDelims(value, index) || index;
     }
+
     export function qcharNoAMPDQUOTE(value: Utils.SourceArray, index: number): number {
         index = Lexer.BWS(value, index);
         if (Lexer.unreserved(value[index]) || value[index] === 0x3a || value[index] === 0x40 || value[index] === 0x2f || value[index] === 0x3f || value[index] === 0x24 || value[index] === 0x27 || value[index] === 0x3d) return index + 1;
@@ -370,7 +390,7 @@ export namespace Lexer {
     export function year(value: Utils.SourceArray, index: number): number {
         let start = index;
         let end = index;
-        if (value[index] === 0x2d) index++;
+        if (value[index] === 0x2d) index++; // -
         if ((value[index] === 0x30 && (end = Utils.required(value, index + 1, Lexer.DIGIT, 3, 3))) ||
             (Lexer.oneToNine(value[index]) && (end = Utils.required(value, index + 1, Lexer.DIGIT, 3)))) return end;
         return start;
