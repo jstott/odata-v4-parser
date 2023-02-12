@@ -26,7 +26,7 @@
   "homepage": "https://github.com/jstott/odata-v4-parser#readme",
   "license": "MIT",
   "main": "lib/parser.js",
-  "name": "odata-v4-parser",
+  "name": "@jwstott/odata-v4-parser",
   "repository": {
     "type": "git",
     "url": "git://github.com/jstott/odata-v4-parser.git"
