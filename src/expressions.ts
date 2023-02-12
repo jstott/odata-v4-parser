@@ -6,19 +6,20 @@ import ArrayOrObject from "./json";
 
 export namespace Expressions {
     export function commonExpr(value: Utils.SourceArray, index: number): Lexer.Token {
-        let token = jsonPathExpr(value, index) ||
+        let token =
             PrimitiveLiteral.primitiveLiteral(value, index) ||
             parameterAlias(value, index) ||
             ArrayOrObject.arrayOrObject(value, index) ||
             rootExpr(value, index) ||
             methodCallExpr(value, index) ||
+            jsonPathExpr(value, index) || // position matters!  go no lower for jsonPathExpr eval
             firstMemberExpr(value, index) ||
             functionExpr(value, index) ||
             negateExpr(value, index) ||
             parenExpr(value, index) ||
             castExpr(value, index);
 
-        if (!token) return;
+            if (!token) return;
 
         let expr = addExpr(value, token.next) ||
             subExpr(value, token.next) ||
@@ -100,6 +101,7 @@ export namespace Expressions {
     export function jsonPathExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         let token = null;
         let start = index;
+
         let re = /^([\w'#{}\->\[\]]{5,})[\s,]+/;
         if (!Utils.has(value, start, value.length, ">")) {
             return; // if values does not include a > - abort
@@ -266,16 +268,16 @@ export namespace Expressions {
         let parameters;
         if (min > 0) {
             parameters = [];
-           /*  let expr = commonExpr(value, index);
-            if (expr) {
-                parameters.push(expr.value);
-                index = expr.next;
-                index = Lexer.OWS(value, index); // allow for optional whitespace eg. shipto ->>
-            } else return; */
+            /*  let expr = commonExpr(value, index);
+             if (expr) {
+                 parameters.push(expr.value);
+                 index = expr.next;
+                 index = Lexer.OWS(value, index); // allow for optional whitespace eg. shipto ->>
+             } else return; */
 
             while (parameters.length < max) {
-               // let  expr = jsonValueExpr(value, index) || jsonObjectExpr(value, index) || commonExpr(value, index);
-               let  expr = commonExpr(value, index);
+                // let  expr = jsonValueExpr(value, index) || jsonObjectExpr(value, index) || commonExpr(value, index);
+                let expr = commonExpr(value, index);
                 if (parameters.length < min && !expr) {
                     return;
                 }
@@ -611,7 +613,7 @@ export namespace Expressions {
     export function collectionNavigationExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         let start = index;
         let entity, predicate, navigation, path;
-        if (value[index] === 0x2f) {
+        if (value[index] === 0x2f) { // `/`
             index++;
             entity = NameOrIdentifier.qualifiedEntityTypeName(value, index);
             if (!entity) return;
@@ -846,10 +848,12 @@ export namespace Expressions {
         if (Utils.equals(value, index, "/$count")) return Lexer.tokenize(value, index, index + 7, "/$count", Lexer.TokenType.CountExpression);
     }
     export function jsonObjectExpr(value: Utils.SourceArray, index: number): Lexer.Token {
-        if (Utils.equals(value, index, "->")) return Lexer.tokenize(value, index, index + 2, "->", Lexer.TokenType.RefExpression);
+        if (Utils.equals(value, index, "->"))
+            return Lexer.tokenize(value, index, index + 2, "->", Lexer.TokenType.RefExpression);
     }
     export function jsonValueExpr(value: Utils.SourceArray, index: number): Lexer.Token {
-        if (Utils.equals(value, index, "->>")) return Lexer.tokenize(value, index, index + 3, "->>", Lexer.TokenType.RefExpression);
+        if (Utils.equals(value, index, "->>"))
+            return Lexer.tokenize(value, index, index + 3, "->>", Lexer.TokenType.RefExpression);
     }
     export function refExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         if (Utils.equals(value, index, "/$ref")) return Lexer.tokenize(value, index, index + 5, "/$ref", Lexer.TokenType.RefExpression);

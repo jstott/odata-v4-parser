@@ -5,10 +5,12 @@ import Query from "./query";
 import ResourcePath from "./resourcePath";
 import ODataUri from "./odataUri";
 
-export const parserFactory = function(fn) {
+
+export const parserFactory = function (fn) {
   return function (source, options) {
     options = options || {};
-    // HACK - replace in (...) with in [...] so the array parsing works
+    source = (source || "").trim(); // ensure no trailing whitespace or newlines.
+    // HACK - replace 'in (...)' with 'in [...]' so array parsing works
     const replacedSource = source.replace(/in \((.+)\)/g, "in [$1]");
 
     const raw = new Uint16Array(replacedSource.length);
@@ -17,19 +19,24 @@ export const parserFactory = function(fn) {
       raw[i] = replacedSource.charCodeAt(i);
     }
     let result = fn(raw, pos, options.metadata);
-    if (!result) throw new Error("Fail at " + pos);
-    if (result.next < raw.length) throw new Error("Unexpected character at " + result.next);
+    if (!result) {
+      throw new Error("Fail at " + pos);
+    }
+    if (result.next < raw.length) {
+      console.log("Unexpected character at " + result.next + " " + String.fromCharCode(raw[result.next]));
+      throw new Error("Unexpected character at " + result.next);
+    }
     return result;
   };
 };
 
 export class Parser {
-    odataUri(source: string, options?: any): Lexer.Token { return parserFactory(ODataUri.odataUri)(source, options); }
-    resourcePath(source: string, options?: any): Lexer.Token { return parserFactory(ResourcePath.resourcePath)(source, options); }
-    query(source: string, options?: any): Lexer.Token { return parserFactory(Query.queryOptions)(source, options); }
-    filter(source: string, options?: any): Lexer.Token { return parserFactory(Expressions.boolCommonExpr)(source, options); }
-    keys(source: string, options?: any): Lexer.Token { return parserFactory(Expressions.keyPredicate)(source, options); }
-    literal(source: string, options?: any): Lexer.Token { return parserFactory(PrimitiveLiteral.primitiveLiteral)(source, options); }
+  odataUri(source: string, options?: any): Lexer.Token { return parserFactory(ODataUri.odataUri)(source, options); }
+  resourcePath(source: string, options?: any): Lexer.Token { return parserFactory(ResourcePath.resourcePath)(source, options); }
+  query(source: string, options?: any): Lexer.Token { return parserFactory(Query.queryOptions)(source, options); }
+  filter(source: string, options?: any): Lexer.Token { return parserFactory(Expressions.boolCommonExpr)(source, options); }
+  keys(source: string, options?: any): Lexer.Token { return parserFactory(Expressions.keyPredicate)(source, options); }
+  literal(source: string, options?: any): Lexer.Token { return parserFactory(PrimitiveLiteral.primitiveLiteral)(source, options); }
 }
 
 export function odataUri(source: string, options?: any): Lexer.Token { return parserFactory(ODataUri.odataUri)(source, options); }

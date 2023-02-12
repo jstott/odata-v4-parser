@@ -41,10 +41,12 @@
     "pretest": "npm run build",
     "pretestb": "npm run build",
     "pretestc": "npm run build",
+    "pretestd": "npm run build",
     "tdd": "concurrently \"tsc -w\" \"mocha -w\"",
     "test": "rimraf report && mocha test/**/*.spec.js --reporter mochawesome --reporter-options reportDir=report,reportFilename=index,reportTitle=\"JayStack OData V4 Parser\"",
     "testb": "rimraf report && mocha test/**/*jsonb.spec.js --reporter mochawesome --reporter-options reportDir=report,reportFilename=index,reportTitle=\"JayStack OData V4 Parser\"",
     "testc": "rimraf report && mocha test/**/*jsonc.spec.js --reporter mochawesome --reporter-options reportDir=report,reportFilename=index,reportTitle=\"JayStack OData V4 Parser\"",
+    "testd": "rimraf report && mocha test/**/*jsond.spec.js --reporter mochawesome --reporter-options reportDir=report,reportFilename=index,reportTitle=\"JayStack OData V4 Parser\"",
     "typedoc": "typedoc --name \"JayStack OData v4 Parser\" --excludeExternals --excludeNotExported --hideGenerator --excludeExternals --excludePrivate --out docs src"
   },
   "typings": "lib/parser.d.ts",

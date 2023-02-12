@@ -223,8 +223,8 @@ export namespace Lexer {
     /* ------------------------------------------------------------------------------
                core definitions
     -------------------------------------------------------------------------------- */
-    // A-Z,a-z, >= 80
-    export function ALPHA(value: number): boolean { return (value >= 0x41 && value <= 0x5a) || (value >= 0x61 && value <= 0x7a) || value >= 0x80;  } // || value === 0x3e || value === 0x2d;
+    // A-Z,a-z, >=- 80
+    export function ALPHA(value: number): boolean { return (value >= 0x41 && value <= 0x5a) || (value >= 0x61 && value <= 0x7a) || value >= 0x80 || value === 0x3c || value === 0x3e || value === 0x2d; } //  ;
     export function DIGIT(value: number): boolean { return (value >= 0x30 && value <= 0x39); }
     export function HEXDIG(value: number): boolean { return Lexer.DIGIT(value) || Lexer.AtoF(value); }
     export function AtoF(value: number): boolean { return (value >= 0x41 && value <= 0x46) || (value >= 0x61 && value <= 0x66); }
@@ -346,7 +346,8 @@ export namespace Lexer {
     }
 
     export function qcharNoAMP(value: Utils.SourceArray, index: number): number {
-        if (Lexer.unreserved(value[index]) || value[index] === 0x3a || value[index] === 0x40 || value[index] === 0x2f || value[index] === 0x3f || value[index] === 0x24 || value[index] === 0x27 || value[index] === 0x3d) return index + 1;
+        // characters: : @ ' ? $ =
+        if (Lexer.unreserved(value[index]) || value[index] === 0x3a || value[index] === 0x40 || value[index] === 0x2f || value[index] === 0x3f || value[index] === 0x24 || value[index] === 0x27 || value[index] === 0x3d)  return index + 1;
         else return Lexer.pctEncoded(value, index) || Lexer.otherDelims(value, index) || index;
     }
 
