@@ -52,6 +52,8 @@ export declare enum TokenType {
     JsonPathExpression = "JsonPathExpression",
     AndExpression = "AndExpression",
     OrExpression = "OrExpression",
+    IsNullExpression = "IsNullExpression",
+    IsNotNullExpression = "IsNotNullExpression",
     EqualsExpression = "EqualsExpression",
     NotEqualsExpression = "NotEqualsExpression",
     LesserThanExpression = "LesserThanExpression",

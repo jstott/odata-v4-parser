@@ -6,6 +6,8 @@ export declare namespace Expressions {
     function jsonPathExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function andExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function orExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function isNotNullExpr(value: Utils.SourceArray, index: number): Lexer.Token;
+    function isNullExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function leftRightExpr(value: Utils.SourceArray, index: number, expr: string, tokenType: Lexer.TokenType): Lexer.Token;
     function eqExpr(value: Utils.SourceArray, index: number): Lexer.Token;
     function neExpr(value: Utils.SourceArray, index: number): Lexer.Token;

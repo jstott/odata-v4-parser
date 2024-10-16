@@ -5,6 +5,9 @@ import NameOrIdentifier from "./nameOrIdentifier";
 import ArrayOrObject from "./json";
 
 export namespace Expressions {
+
+
+
     export function commonExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         let token =
             PrimitiveLiteral.primitiveLiteral(value, index) ||
@@ -12,14 +15,16 @@ export namespace Expressions {
             ArrayOrObject.arrayOrObject(value, index) ||
             rootExpr(value, index) ||
             methodCallExpr(value, index) ||
-            jsonPathExpr(value, index) || // position matters!  go no lower for jsonPathExpr eval
+            jsonPathExpr(value, index) ||
+            isNotNullExpr(value, index) ||
+            isNullExpr(value, index) ||
             firstMemberExpr(value, index) ||
             functionExpr(value, index) ||
             negateExpr(value, index) ||
             parenExpr(value, index) ||
-            castExpr(value, index);
+            castExpr(value, index); // Added isNullExpr here
 
-            if (!token) return;
+        if (!token) return;
 
         let expr = addExpr(value, token.next) ||
             subExpr(value, token.next) ||
@@ -41,12 +46,14 @@ export namespace Expressions {
     }
 
     export function boolCommonExpr(value: Utils.SourceArray, index: number): Lexer.Token {
-        let token = // jsonbExpr(value, index) ||
+        let token =
             isofExpr(value, index) ||
             boolMethodCallExpr(value, index) ||
             notExpr(value, index) ||
             commonExpr(value, index) ||
-            boolParenExpr(value, index);
+            boolParenExpr(value, index) ||
+            isNotNullExpr(value, index) ||
+            isNullExpr(value, index); // Added isNullExpr here
 
         if (!token) return;
 
@@ -143,6 +150,52 @@ export namespace Expressions {
         return Lexer.tokenize(value, start, index, token, Lexer.TokenType.OrExpression);
     }
 
+    // Create a function for isNotNullExpr
+
+    export function isNotNullExpr(value: Utils.SourceArray, index: number): Lexer.Token {
+        let start = index;
+        let token = firstMemberExpr(value, index); // Parse the member expression directly
+        if (!token) {
+            return null;
+        }
+        index = token.next;
+
+        // skip leading spaces
+        while (value[index] === 32) { // 32 is the ASCII code for space
+            index++;
+        }
+
+        // let val = Utils.stringify(value, index, index + 8);
+        if (!Utils.equals(value, index, "is not null")) {
+            return null;
+        }
+        index += 11; // Move past "is not null"
+
+        return Lexer.tokenize(value, start, index, `"${token.raw}" IS NOT NULL`, Lexer.TokenType.IsNotNullExpression);
+    }
+
+    export function isNullExpr(value: Utils.SourceArray, index: number): Lexer.Token {
+        let start = index;
+        let token = firstMemberExpr(value, index); // Parse the member expression directly
+        if (!token) {
+            return null;
+        }
+        index = token.next;
+
+        // Skip leading spaces
+        while (value[index] === 32) { // 32 is the ASCII code for space
+            index++;
+        }
+
+        // let val = Utils.stringify(value, index, index + 8);
+        if (!Utils.equals(value, index, "is null")) {
+            return null;
+        }
+        index += 7; // Move past "is null"
+
+        return Lexer.tokenize(value, start, index, `"${token.raw}" IS NULL`, Lexer.TokenType.IsNullExpression);
+    }
+
     export function leftRightExpr(value: Utils.SourceArray, index: number, expr: string, tokenType: Lexer.TokenType): Lexer.Token {
         let rws = Lexer.RWS(value, index);
         if (rws === index) return;
@@ -158,6 +211,9 @@ export namespace Expressions {
 
         return Lexer.tokenize(value, start, index, token.value, tokenType);
     }
+
+
+
     export function eqExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "eq", Lexer.TokenType.EqualsExpression); }
     export function neExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "ne", Lexer.TokenType.NotEqualsExpression); }
     export function ltExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "lt", Lexer.TokenType.LesserThanExpression); }
