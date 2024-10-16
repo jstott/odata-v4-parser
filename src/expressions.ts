@@ -10,14 +10,17 @@ export namespace Expressions {
 
     export function commonExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         let token =
+
             PrimitiveLiteral.primitiveLiteral(value, index) ||
             parameterAlias(value, index) ||
             ArrayOrObject.arrayOrObject(value, index) ||
             rootExpr(value, index) ||
             methodCallExpr(value, index) ||
             jsonPathExpr(value, index) ||
-            isNotNullExpr(value, index) ||
+            isNullOrEmptyExpr(value, index) ||
             isNullExpr(value, index) ||
+            isNotNullExpr(value, index) ||
+
             firstMemberExpr(value, index) ||
             functionExpr(value, index) ||
             negateExpr(value, index) ||
@@ -150,7 +153,7 @@ export namespace Expressions {
         return Lexer.tokenize(value, start, index, token, Lexer.TokenType.OrExpression);
     }
 
-    // Create a function for isNotNullExpr
+    // Functions for isNull or isNotNull
 
     export function isNotNullExpr(value: Utils.SourceArray, index: number): Lexer.Token {
         let start = index;
@@ -194,6 +197,30 @@ export namespace Expressions {
         index += 7; // Move past "is null"
 
         return Lexer.tokenize(value, start, index, `"${token.raw}" IS NULL`, Lexer.TokenType.IsNullExpression);
+    }
+
+    // Functions for isNullOrEmpty
+
+    export function isNullOrEmptyExpr(value: Utils.SourceArray, index: number): Lexer.Token {
+        let start = index;
+        let token = firstMemberExpr(value, index); // Parse the member expression directly
+        if (!token) {
+            return null;
+        }
+        index = token.next;
+
+        // Skip leading spaces
+        while (value[index] === 32) { // 32 is the ASCII code for space
+            index++;
+        }
+
+        // let val = Utils.stringify(value, index, index + 8);
+        if (!Utils.equals(value, index, "is nullOrEmpty")) {
+            return null;
+        }
+        index += 14; // Move past "is nullOrEmpty"
+
+        return Lexer.tokenize(value, start, index, `( "${token.raw}" IS NULL OR ${token.raw} = '' )`, Lexer.TokenType.IsNullOrEmtpyExpression);
     }
 
     export function leftRightExpr(value: Utils.SourceArray, index: number, expr: string, tokenType: Lexer.TokenType): Lexer.Token {

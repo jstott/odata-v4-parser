@@ -53,6 +53,7 @@ export declare enum TokenType {
     AndExpression = "AndExpression",
     OrExpression = "OrExpression",
     IsNullExpression = "IsNullExpression",
+    IsNullOrEmtpyExpression = "IsNullOrEmptyExpression",
     IsNotNullExpression = "IsNotNullExpression",
     EqualsExpression = "EqualsExpression",
     NotEqualsExpression = "NotEqualsExpression",
