@@ -220,7 +220,7 @@ export namespace Expressions {
         }
         index += 14; // Move past "is nullOrEmpty"
 
-        return Lexer.tokenize(value, start, index, `( "${token.raw}" IS NULL OR ${token.raw} = '' )`, Lexer.TokenType.IsNullOrEmtpyExpression);
+        return Lexer.tokenize(value, start, index, `( "${token.raw}" IS NULL OR "${token.raw}" = '' )`, Lexer.TokenType.IsNullOrEmtpyExpression);
     }
 
     export function leftRightExpr(value: Utils.SourceArray, index: number, expr: string, tokenType: Lexer.TokenType): Lexer.Token {

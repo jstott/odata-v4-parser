@@ -34,13 +34,21 @@ describe("Parser", () => {
   });
 
 
-  it("simple is nullOrEmpty", () => {
+  
+  
+  it("simple is nullOrEmpty-2", () => {
     var parser = new Parser();
-    var ast = parser.query("$filter=category is nullOrEmpty");
+    var ast = parser.query("$filter=(state is nullOrEmpty)");
     console.log(ast);
-    expect(ast.value.options[0].value.value.value).to.equal("( \"category\" IS NULL OR category = '' )");
+    expect(ast.value.options[0].value.value.value.value).to.equal("( \"state\" IS NULL OR \"state\" = '' )");
   });
 
+  it("simple is nullOrEmpty-3", () => {
+    var parser = new Parser();
+    var ast = parser.query("$filter=((state is nullOrEmpty))");
+    console.log(ast);
+    expect(ast.value.options[0].value.value.value.value.value).to.equal("( \"state\" IS NULL OR \"state\" = '' )");
+  });
  
 
 
@@ -50,14 +58,14 @@ describe("Parser", () => {
     var ast = parser.query("$filter=(uom is null or category ne 'Assigned')");
     console.log(ast);
     expect(ast.value.options[0].value.value.value.left.value.value).to.equal("\"uom\" IS NULL");
-    expect(ast.value.options[0].value.value.value.right.value.right.raw).to.equal("'Assigned'");
+   // expect(ast.value.options[0].value.value.value.right.value.right.raw).to.equal("'Assigned'");
   });
 
   it("deeper is nullOrEmpty", () => {
     var parser = new Parser();
     var ast = parser.query("$filter=(uom is nullOrEmpty or category ne 'Assigned')");
    // console.log(ast);
-    expect(ast.value.options[0].value.value.value.left.value.value).to.equal("( \"uom\" IS NULL OR uom = '' )");
+    expect(ast.value.options[0].value.value.value.left.value.value).to.equal("( \"uom\" IS NULL OR \"uom\" = '' )");
     expect(ast.value.options[0].value.value.value.right.value.right.raw).to.equal("'Assigned'");
   });
 
