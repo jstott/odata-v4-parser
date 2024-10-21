@@ -69,4 +69,12 @@ describe("Parser", () => {
     expect(ast.value.options[0].value.value.value.right.value.right.raw).to.equal("'Assigned'");
   });
 
+  it("snakeCase is nullOrEmpty", () => {
+    var parser = new Parser();
+    var ast = parser.query("$filter=(isAssigned is nullOrEmpty or isAssigned ne 'Assigned')");
+   // console.log(ast);
+    expect(ast.value.options[0].value.value.value.left.value.value).to.equal("( \"isAssigned\" IS NULL OR \"isAssigned\" = '' )");
+    expect(ast.value.options[0].value.value.value.right.value.right.raw).to.equal("'Assigned'");
+  });
+
 });
