@@ -1,0 +1,16 @@
+# Debug and test files
+debug-*.js
+test-transformation.js
+
+# VSCode settings
+.vscode/
+
+# Test reports
+report/
+
+# TypeScript config
+tsconfig.json
+tslint.json
+
+# Development dependencies and configs
+.istanbul.yaml
