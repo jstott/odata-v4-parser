@@ -172,7 +172,13 @@ export namespace Expressions {
         }
         index += 11; // Move past "is not null"
 
-        return Lexer.tokenize(value, start, index, `"${token.raw}" IS NOT NULL`, Lexer.TokenType.IsNotNullExpression);
+        // Transform field names with double underscore to dot notation (e.g., vAsset__state -> vAsset.state)
+        let fieldName = token.raw;
+        if (fieldName.includes("__")) {
+            fieldName = fieldName.replace("__", ".");
+        }
+
+        return Lexer.tokenize(value, start, index, `"${fieldName}" IS NOT NULL`, Lexer.TokenType.IsNotNullExpression);
     }
 
     export function isNullExpr(value: Utils.SourceArray, index: number): Lexer.Token {
@@ -224,7 +230,13 @@ export namespace Expressions {
         }
         index += 14; // Move past "is nullOrEmpty"
 
-        return Lexer.tokenize(value, start, index, `( "${token.raw}" IS NULL OR "${token.raw}" = '' )`, Lexer.TokenType.IsNullOrEmtpyExpression);
+        // Transform field names with double underscore to dot notation (e.g., vAsset__state -> vAsset.state)
+        let fieldName = token.raw;
+        if (fieldName.includes("__")) {
+            fieldName = fieldName.replace("__", ".");
+        }
+
+        return Lexer.tokenize(value, start, index, `( "${fieldName}" IS NULL OR "${fieldName}" = '' )`, Lexer.TokenType.IsNullOrEmtpyExpression);
     }
 
     export function leftRightExpr(value: Utils.SourceArray, index: number, expr: string, tokenType: Lexer.TokenType): Lexer.Token {

@@ -9,7 +9,7 @@ describe("Parser", () => {
         var parser = new Parser();
         var ast = parser.query("$filter=vAsset__state is not null");
         console.log(ast);
-        expect(ast.value.options[0].value.value.value).to.equal("\"vAsset__state\" IS NOT NULL");
+        expect(ast.value.options[0].value.value.value).to.equal("\"vAsset.state\" IS NOT NULL");
     });
 
     it("advanced is null", () => {
@@ -24,7 +24,7 @@ describe("Parser", () => {
         var ast = parser.query("$filter=vAsset__state is nullOrEmpty");
         console.log(ast);
 
-        expect(ast.value.options[0].value.value.value).to.equal("( \"vAsset__state\" IS NULL OR \"vAsset__state\" = '' )");
+        expect(ast.value.options[0].value.value.value).to.equal("( \"vAsset.state\" IS NULL OR \"vAsset.state\" = '' )");
 
     });
 
