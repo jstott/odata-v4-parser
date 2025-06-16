@@ -103,9 +103,7 @@ export namespace Expressions {
                 token.type = token.value.right.type;
                 token.value.right = token.value.right.value.right;
             }
-        }
-
-        return token;
+        }        return token;
     }
 
     export function jsonPathExpr(value: Utils.SourceArray, index: number): Lexer.Token {
@@ -196,7 +194,13 @@ export namespace Expressions {
         }
         index += 7; // Move past "is null"
 
-        return Lexer.tokenize(value, start, index, `"${token.raw}" IS NULL`, Lexer.TokenType.IsNullExpression);
+        // Transform field names with double underscore to dot notation (e.g., vAsset__state -> vAsset.state)
+        let fieldName = token.raw;
+        if (fieldName.includes("__")) {
+            fieldName = fieldName.replace("__", ".");
+        }
+
+        return Lexer.tokenize(value, start, index, `"${fieldName}" IS NULL`, Lexer.TokenType.IsNullExpression);
     }
 
     // Functions for isNullOrEmpty
@@ -237,11 +241,7 @@ export namespace Expressions {
         if (!token) return;
 
         return Lexer.tokenize(value, start, index, token.value, tokenType);
-    }
-
-
-
-    export function eqExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "eq", Lexer.TokenType.EqualsExpression); }
+    }    export function eqExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "eq", Lexer.TokenType.EqualsExpression); }
     export function neExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "ne", Lexer.TokenType.NotEqualsExpression); }
     export function ltExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "lt", Lexer.TokenType.LesserThanExpression); }
     export function leExpr(value: Utils.SourceArray, index: number): Lexer.Token { return leftRightExpr(value, index, "le", Lexer.TokenType.LesserOrEqualsExpression); }

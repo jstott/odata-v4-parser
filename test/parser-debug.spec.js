@@ -33,6 +33,26 @@ describe("Parser", () => {
     expect(ast.value.options[0].value.value.value).to.equal("\"category\" IS NOT NULL");
   });
 
+    it("simple equal", () => {
+    var parser = new Parser();
+    var ast = parser.query("$filter=category eq 'Assigned'");
+    console.log(ast);
+    // Build the expected SQL-like string from the structure
+    var leftStr = `"${ast.value.options[0].value.value.left.raw}"`;
+    var rightStr = ast.value.options[0].value.value.right.raw;
+    var expectedString = `${leftStr} eq ${rightStr}`;
+    expect(expectedString).to.equal("\"category\" eq 'Assigned'");
+  });
+
+
+
+    it("advanced is not null", () => {
+    var parser = new Parser();
+    var ast = parser.query("$filter=vAsset__state is null");
+    console.log(ast);
+    expect(ast.value.options[0].value.value.value).to.equal("\"vAsset.state\" IS NULL");
+  });
+
 
   
   

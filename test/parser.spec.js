@@ -39,7 +39,10 @@ describe("Parser", () => {
   it("should parse query string", () => {
     var parser = new Parser();
     var ast = parser.query("$filter=Title eq 'alma'");
+    console.log(ast);
     expect(ast.value.options[0].type).to.equal("Filter");
+    console.log(ast.value.options[0].value.value.value);
+    //    expect(ast.value.options[0].value.value.value).to.equal("\"Title\" eq 'alma'");
   });
 
   it("should parse multiple orderby params", () => {
