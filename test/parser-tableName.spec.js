@@ -12,14 +12,14 @@ describe("Parser", () => {
         expect(ast.value.options[0].value.value.value).to.equal("\"vAsset.state\" IS NOT NULL");
     });
 
-    it("advanced is null", () => {
+    it("table-column advanced is null", () => {
         var parser = new Parser();
         var ast = parser.query("$filter=vAsset__state is null");
         console.log(ast);
         expect(ast.value.options[0].value.value.value).to.equal("\"vAsset.state\" IS NULL");
     });
 
-    it("advanced is nullOrEmpty", () => {
+    it("table-column advanced is nullOrEmpty", () => {
         var parser = new Parser();
         var ast = parser.query("$filter=vAsset__state is nullOrEmpty");
         console.log(ast);

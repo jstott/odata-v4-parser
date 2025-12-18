@@ -89,4 +89,10 @@ describe("Parser", () => {
     expect(ast.value.options[0].value.value.value.right.value.right.raw).to.equal("'Assigned'");
   });
 
+  it("simple contains with non alpha-numeric", () => {
+    var parser = new Parser();
+    var ast = parser.query("$filter=contains(partName,'PO # 5')");
+    console.log(ast);
+  });
+
 });

@@ -344,7 +344,7 @@ export namespace Lexer {
     }
 
     export function pcharNoSQUOTE(value: Utils.SourceArray, index: number): number {
-        if (Lexer.unreserved(value[index]) || value[index] === 0x24 || value[index] === 0x26) return index + 1;
+        if (Lexer.unreserved(value[index]) || value[index] === 0x24 || value[index] === 0x26 || value[index] === 0x23) return index + 1;
         else return Lexer.otherDelims(value, index) || Lexer.EQ(value, index) || Lexer.COLON(value, index) || Lexer.AT(value, index) || Lexer.pctEncodedNoSQUOTE(value, index) || index;
     }
 
